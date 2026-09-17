@@ -227,7 +227,8 @@ class PesertaController extends Controller
     {
         $riwayat = Absensi::where('user_id', Auth::id())
             ->orderBy('tanggal', 'desc')
-            ->get();
+            ->paginate(10);
+
         return view('peserta.riwayat', compact('riwayat'));
     }
 }
