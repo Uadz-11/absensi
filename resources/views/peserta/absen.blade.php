@@ -99,18 +99,20 @@
                     <input type="text" class="form-control" value="{{ Auth::user()->name }}" readonly style="background-color: #F8FAFC; color: #475569;">
                 </div>
 
-                <!-- Keterangan Selector -->
-                <label class="form-label">Keterangan</label>
-                <div class="keterangan-selector">
-                    <input type="radio" id="ket_hadir" name="keterangan_type" value="hadir" checked onchange="toggleForm()">
-                    <label for="ket_hadir">Hadir</label>
+                @if($type !== 'pulang')
+                    <!-- Keterangan Selector -->
+                    <label class="form-label">Keterangan</label>
+                    <div class="keterangan-selector">
+                        <input type="radio" id="ket_hadir" name="keterangan_type" value="hadir" checked onchange="toggleForm()">
+                        <label for="ket_hadir">Hadir</label>
 
-                    <input type="radio" id="ket_izin" name="keterangan_type" value="izin" onchange="toggleForm()">
-                    <label for="ket_izin">Izin</label>
-                    
-                    <input type="radio" id="ket_sakit" name="keterangan_type" value="sakit" onchange="toggleForm()">
-                    <label for="ket_sakit">Sakit</label>
-                </div>
+                        <input type="radio" id="ket_izin" name="keterangan_type" value="izin" onchange="toggleForm()">
+                        <label for="ket_izin">Izin</label>
+                        
+                        <input type="radio" id="ket_sakit" name="keterangan_type" value="sakit" onchange="toggleForm()">
+                        <label for="ket_sakit">Sakit</label>
+                    </div>
+                @endif
 
                 <!-- FORM HADIR -->
                 <form id="form-hadir" method="POST" action="{{ $type === 'masuk' ? route('absen.masuk') : route('absen.pulang') }}">
@@ -185,11 +187,21 @@
     const canvas = document.getElementById('faceCanvas');
 
     function toggleForm() {
-        const val = document.querySelector('input[name="keterangan_type"]:checked').value;
         const formHadir = document.getElementById('form-hadir');
         const formIzinSakit = document.getElementById('form-izin-sakit');
         const inputJenis = document.getElementById('inputJenis');
         const btnIzinSakit = formIzinSakit.querySelector('button[type="submit"]');
+
+        const isPulang = {{ $type === 'pulang' ? 'true' : 'false' }};
+
+        if (isPulang) {
+            formHadir.style.display = 'block';
+            formIzinSakit.style.display = 'none';
+            if(!stream) startCamera();
+            return;
+        }
+
+        const val = document.querySelector('input[name="keterangan_type"]:checked').value;
 
         if(val === 'hadir') {
             formHadir.style.display = 'block';
@@ -264,6 +276,13 @@
     }
 
     window.addEventListener('load', function() {
+        const isPulang = {{ $type === 'pulang' ? 'true' : 'false' }};
+
+        if (isPulang) {
+            startCamera();
+            return;
+        }
+
         if(document.querySelector('input[name="keterangan_type"]:checked').value === 'hadir') {
             startCamera();
         }
