@@ -198,6 +198,10 @@ class PesertaController extends Controller
         $riwayat = Absensi::where('user_id', Auth::id())
             ->orderBy('tanggal', 'desc')
             ->paginate(10);
+<<<<<<< HEAD
+=======
+
+>>>>>>> a3f7b964ef0b24502e1240e40c7b991481dca3c0
         return view('peserta.riwayat', compact('riwayat'));
     }
 
